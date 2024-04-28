@@ -19,12 +19,12 @@ module muxes (
     end
 
     // 4-Input MUX for y1_o using a case statement
-    // Replace a_i and b_i with 0
+    // Reordered zero outputs to the first and third positions
     always_comb begin
         case (sel4_i)
             2'b00: y1_o = 0;            // Output 0 when selector is 00
-            2'b01: y1_o = 0;            // Output 0 when selector is 01
-            2'b10: y1_o = c_i;          // Select input c_i when selector is 10
+            2'b01: y1_o = c_i;          // Select input c_i when selector is 01
+            2'b10: y1_o = 0;            // Output 0 when selector is 10
             2'b11: y1_o = d_i;          // Select input d_i when selector is 11
             default: y1_o = 0;          // Default to 0 (optional safe case)
         endcase
