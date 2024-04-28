@@ -8,17 +8,17 @@ module muxes (
     output logic y1_o      // Output y1 for 4-input MUX
 );
 
-    // XOR gate between a_i and b_i
-    wire xor_ab;
-    assign xor_ab = a_i ^ b_i;
+    // XOR gate between a_i and b_i, named "$xor"
+    wire $xor;
+    assign $xor = a_i ^ b_i;
 
     // 2-Input MUX for y0_o using the result of the XOR gate as a selector
-    // Select between (c_i, d_i) based on the XOR of a_i and b_i
+    // Select between (c_i, d_i) based on the XOR of a_i and b_i, named "$2mux"
     always_comb begin
-        y0_o = xor_ab ? d_i : c_i;  // Use xor_ab to select between c_i and d_i
+        y0_o = $xor ? d_i : c_i;  // Use $xor to select between c_i and d_i
     end
 
-    // 4-Input MUX for y1_o using a case statement
+    // 4-Input MUX for y1_o using a case statement, named "$4mux"
     // Reordered zero outputs to the first and third positions
     always_comb begin
         case (sel4_i)
