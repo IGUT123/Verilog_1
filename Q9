@@ -1,0 +1,33 @@
+module muxes (
+    input logic a_i,       // Input a
+    input logic b_i,       // Input b
+    input logic c_i,       // Input c
+    input logic d_i,       // Input d
+    input logic [1:0] sel4_i,  // 2-bit selector for the 4-to-1 MUX
+    output logic y0_o,     // Output y0 for 2-input MUX
+    output logic y1_o      // Output y1 for 4-input MUX
+);
+
+    // XOR gate between a_i and b_i
+    wire xor_ab;
+    assign xor_ab = a_i ^ b_i;
+
+    // 2-Input MUX for y0_o using the result of the XOR gate as a selector
+    // Select between (c_i, d_i) based on the XOR of a_i and b_i
+    always_comb begin
+        y0_o = xor_ab ? d_i : c_i;  // Use xor_ab to select between c_i and d_i
+    end
+
+    // 4-Input MUX for y1_o using a case statement
+    // Replace a_i and b_i with 0
+    always_comb begin
+        case (sel4_i)
+            2'b00: y1_o = 0;            // Output 0 when selector is 00
+            2'b01: y1_o = 0;            // Output 0 when selector is 01
+            2'b10: y1_o = c_i;          // Select input c_i when selector is 10
+            2'b11: y1_o = d_i;          // Select input d_i when selector is 11
+            default: y1_o = 0;          // Default to 0 (optional safe case)
+        endcase
+    end
+
+endmodule
