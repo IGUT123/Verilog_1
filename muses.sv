@@ -29,4 +29,4 @@ module muxes (
         endcase
     end
 
-endmodule      
+endmodule
