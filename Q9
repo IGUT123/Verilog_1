@@ -1,33 +1,32 @@
 module muxes (
-    input logic a_i,       // Input a
-    input logic b_i,       // Input b
-    input logic c_i,       // Input c
-    input logic d_i,       // Input d
-    input logic [1:0] sel4_i,  // 2-bit selector for the 4-to-1 MUX
-    output logic y0_o,     // Output y0 for 2-input MUX
-    output logic y1_o      // Output y1 for 4-input MUX
+    input logic a_i, b_i, c_i, d_i,
+    input logic [1:0] sel4_i,   // Select line for the 4-to-1 mux
+    output logic y0_o, y1_o     // Outputs for 2-to-1 and 4-to-1 muxes
 );
 
-    // XOR gate between a_i and b_i, named "$xor"
-    wire $xor;
-    assign $xor = a_i ^ b_i;
+    logic xor_out;  // XOR gate output
 
-    // 2-Input MUX for y0_o using the result of the XOR gate as a selector
-    // Select between (c_i, d_i) based on the XOR of a_i and b_i, named "$2mux"
+    // XOR gate
+    assign xor_out = a_i ^ b_i;
+
+    // 2-to-1 Mux
     always_comb begin
-        y0_o = $xor ? d_i : c_i;  // Use $xor to select between c_i and d_i
+        if (xor_out) begin
+            y0_o = d_i;
+        end else begin
+            y0_o = c_i;
+        end
     end
 
-    // 4-Input MUX for y1_o using a case statement, named "$4mux"
-    // Reordered zero outputs to the first and third positions
+    // 4-to-1 Mux
     always_comb begin
         case (sel4_i)
-            2'b00: y1_o = 0;            // Output 0 when selector is 00
-            2'b01: y1_o = c_i;          // Select input c_i when selector is 01
-            2'b10: y1_o = 0;            // Output 0 when selector is 10
-            2'b11: y1_o = d_i;          // Select input d_i when selector is 11
-            default: y1_o = 0;          // Default to 0 (optional safe case)
+            2'b00: y1_o = 0;   // First input of 4-to-1 mux is 0
+            2'b01: y1_o = c_i; // Second input of 4-to-1 mux is c_i
+            2'b10: y1_o = 0;   // Third input of 4-to-1 mux is 0
+            2'b11: y1_o = d_i; // Fourth input of 4-to-1 mux is d_i
+            default: y1_o = 0; // Default case, typically for safety
         endcase
     end
 
-endmodule
+endmodule      
